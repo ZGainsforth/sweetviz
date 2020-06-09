@@ -20,7 +20,7 @@ jinja2_env.filters["fmt_smart_range"] = sweetviz.sv_html_formatters.fmt_smart_ra
 jinja2_env.globals["hello"] = "Superduper"
 
 def load_layout_globals_from_config():
-    layout_globals = dict()
+    layout_globals = {}
     for element in config["Layout"]:
         layout_globals[element] = config["Layout"].getint(element)
     jinja2_env.globals["layout"] = layout_globals
@@ -45,8 +45,7 @@ def generate_html_detail(dataframe_report):
 
     for feature in (all_detail):
         compare_dict = feature.get("compare")
-        if feature["type"] == FeatureType.TYPE_CAT or \
-                feature["type"] == FeatureType.TYPE_BOOL:
+        if feature["type"] in [FeatureType.TYPE_CAT, FeatureType.TYPE_BOOL]:
             feature["html_detail"] = generate_html_detail_cat(feature, compare_dict, dataframe_report)
         elif feature["type"] == FeatureType.TYPE_NUM:
             feature["html_detail"] = generate_html_detail_numeric(feature, compare_dict, dataframe_report)
@@ -61,19 +60,16 @@ def generate_html_dataframe_page(dataframe_report):
     dataframe_report.page_height = 160 + (dataframe_report.num_summaries * (config["Layout"].getint("summary_height_per_element")))
     padding = max(900, (dataframe_report.num_summaries * (config["Layout"].getint("summary_vertical_padding"))))
     dataframe_report.page_height += padding
-    output = template.render(dataframe=dataframe_report)
-    return output
+    return template.render(dataframe=dataframe_report)
 
 
 def generate_html_dataframe_summary(dataframe_report):
     template = jinja2_env.get_template('dataframe_summary.html')
-    output = template.render(dataframe=dataframe_report)
-    return output
+    return template.render(dataframe=dataframe_report)
 
 def generate_html_associations(dataframe_report, which):
     template = jinja2_env.get_template('dataframe_associations.html')
-    output = template.render(dataframe=dataframe_report, which=which)
-    return output
+    return template.render(dataframe=dataframe_report, which=which)
 
 # SUMMARIES
 # ----------------------------------------------------------------------------------------------
@@ -112,14 +108,16 @@ def create_summary_numeric_group_data(feature_dict: dict, compare_dict: dict):
 def generate_html_summary_numeric(feature_dict: dict, compare_dict: dict):
     template = jinja2_env.get_template('feature_summary_numeric.html')
     group_1, group_2 = create_summary_numeric_group_data(feature_dict, compare_dict)
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict, \
-                             group_1=group_1, group_2=group_2)
-    return output
+    return template.render(
+        feature_dict=feature_dict,
+        compare_dict=compare_dict,
+        group_1=group_1,
+        group_2=group_2,
+    )
 
 def generate_html_summary_cat(feature_dict: dict, compare_dict: dict):
     template = jinja2_env.get_template('feature_summary_cat.html')
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict)
-    return output
+    return template.render(feature_dict = feature_dict, compare_dict = compare_dict)
 
 
 def generate_html_summary_text(feature_dict: dict, compare_dict: dict):
@@ -127,7 +125,7 @@ def generate_html_summary_text(feature_dict: dict, compare_dict: dict):
 
     # Set some parameters for breakdown columns
     # ------------------------------------
-    cols = dict()
+    cols = {}
     # Cols: Move text if there is a comparison pair display
     cur_x = config["Layout"].getint("pair_spacing")
     padding =config["Layout"].getint("col_spacing")
@@ -156,8 +154,7 @@ def generate_html_summary_text(feature_dict: dict, compare_dict: dict):
         total = feature_dict["base_stats"]["num_values"].number
         cur_count = sum(row_data["count"].number for row_data in summary_list)
         other = total - cur_count
-        row = dict()
-        row["name"] = OTHERS_GROUPED.strip()
+        row = {"name": OTHERS_GROUPED.strip()}
         row["count"] = NumWithPercent(other, total)
         row["target_stats"] = None
         row["target_stats_compare"] = None
@@ -173,24 +170,26 @@ def generate_html_summary_text(feature_dict: dict, compare_dict: dict):
         if row["count"].number > 0 or (row.get("count_compare") and row.get("count_compare").number > 0):
             summary_list.append(row)
 
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict, \
-                             cols=cols)
-    return output
+    return template.render(
+        feature_dict=feature_dict, compare_dict=compare_dict, cols=cols
+    )
 
 
 # Target versions of summaries
 def generate_html_summary_target_numeric(feature_dict: dict, compare_dict: dict):
     template = jinja2_env.get_template('feature_summary_target_numeric.html')
     group_1, group_2 = create_summary_numeric_group_data(feature_dict, compare_dict)
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict, \
-                             group_1=group_1, group_2=group_2)
-    return output
+    return template.render(
+        feature_dict=feature_dict,
+        compare_dict=compare_dict,
+        group_1=group_1,
+        group_2=group_2,
+    )
 
 
 def generate_html_summary_target_cat(feature_dict: dict, compare_dict: dict):
     template = jinja2_env.get_template('feature_summary_target_cat.html')
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict)
-    return output
+    return template.render(feature_dict = feature_dict, compare_dict = compare_dict)
 
 
 # DETAILS
@@ -247,9 +246,8 @@ def generate_html_detail_cat(feature_dict: dict, compare_dict: dict, dataframe_r
     # ------------------------------------------
     # Vertical
     spacing = config["Layout"].getint("cat_detail_col_spacing")
-    cols = dict()
-    detail_layout = dict()
-    detail_layout["graph_y"] = config["Layout"].getint("cat_detail_graph_y")
+    cols = {}
+    detail_layout = {"graph_y": config["Layout"].getint("cat_detail_graph_y")}
     detail_layout["breakdown_y"] = detail_layout["graph_y"] \
                                 + feature_dict["detail_graphs"][0].size_in_inches[1] * 100 \
                                 + config["Layout"].getint("cat_detail_breakdown_y_offset")
@@ -300,17 +298,25 @@ def generate_html_detail_cat(feature_dict: dict, compare_dict: dict, dataframe_r
     if dataframe_report._associations is not None:
         influencing = dataframe_report._associations[feature_name]
         # Filter by datatype CATEGORICAL
-        influencing = { k: v for k, v in influencing.items() \
-                        if (dataframe_report.get_type(k) == FeatureType.TYPE_BOOL or
-                            dataframe_report.get_type(k) == FeatureType.TYPE_CAT) and
-                            k != feature_name }
+        influencing = {
+            k: v
+            for k, v in influencing.items()
+            if dataframe_report.get_type(k)
+            in [FeatureType.TYPE_BOOL, FeatureType.TYPE_CAT]
+            and k != feature_name
+        }
+
 
         influenced = dataframe_report.get_what_influences_me(feature_name)
         # Filter by datatype CATEGORICAL
-        influenced = { k: v for k, v in influenced.items() \
-                        if (dataframe_report.get_type(k) == FeatureType.TYPE_BOOL or
-                            dataframe_report.get_type(k) == FeatureType.TYPE_CAT) and
-                            k != feature_name }
+        influenced = {
+            k: v
+            for k, v in influenced.items()
+            if dataframe_report.get_type(k)
+            in [FeatureType.TYPE_BOOL, FeatureType.TYPE_CAT]
+            and k != feature_name
+        }
+
 
         # NUM-CAT
         corr_ratio = dataframe_report._associations[feature_name]
@@ -327,10 +333,16 @@ def generate_html_detail_cat(feature_dict: dict, compare_dict: dict, dataframe_r
         influencing = None
         influenced = None
         corr_ratio = None
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict, \
-                             dataframe = dataframe_report, cols=cols, detail_layout=detail_layout,
-                             influencing=influencing, influenced=influenced, corr_ratio=corr_ratio)
-    return output
+    return template.render(
+        feature_dict=feature_dict,
+        compare_dict=compare_dict,
+        dataframe=dataframe_report,
+        cols=cols,
+        detail_layout=detail_layout,
+        influencing=influencing,
+        influenced=influenced,
+        corr_ratio=corr_ratio,
+    )
 
 
 def generate_html_detail_text(feature_dict: dict, compare_dict: dict, dataframe_report):
@@ -338,7 +350,7 @@ def generate_html_detail_text(feature_dict: dict, compare_dict: dict, dataframe_
 
     # Set some parameters for detail columns
     # ------------------------------------
-    cols = dict()
+    cols = {}
     # Cols: Move text if there is a comparison pair display
     cur_x = config["Layout"].getint("pair_spacing")
     padding =config["Layout"].getint("col_spacing")
@@ -368,8 +380,7 @@ def generate_html_detail_text(feature_dict: dict, compare_dict: dict, dataframe_
         total = feature_dict["base_stats"]["num_values"].number
         cur_count = sum(row_data["count"].number for row_data in detail_list)
         other = total - cur_count
-        row = dict()
-        row["name"] = OTHERS_GROUPED.strip()
+        row = {"name": OTHERS_GROUPED.strip()}
         row["count"] = NumWithPercent(other, total)
         row["target_stats"] = None
         row["target_stats_compare"] = None
@@ -385,9 +396,9 @@ def generate_html_detail_text(feature_dict: dict, compare_dict: dict, dataframe_
         if row["count"].number > 0 or (row.get("count_compare") and row.get("count_compare").number > 0):
             detail_list.append(row)
 
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict, \
-                             cols=cols)
-    return output
+    return template.render(
+        feature_dict=feature_dict, compare_dict=compare_dict, cols=cols
+    )
 
 
 #UNUSED yet:
@@ -395,8 +406,7 @@ def generate_html_detail_text(feature_dict: dict, compare_dict: dict, dataframe_
 #UNUSED yet:
 def generate_html_detail_target_numeric(feature_dict: dict, compare_dict: dict):
     template = jinja2_env.get_template('feature_detail_numeric.html')
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict)
-    return output
+    return template.render(feature_dict = feature_dict, compare_dict = compare_dict)
 
 
 # UNUSED yet:
@@ -404,5 +414,4 @@ def generate_html_detail_target_numeric(feature_dict: dict, compare_dict: dict):
 # UNUSED yet:
 def generate_html_detail_target_cat(feature_dict: dict, compare_dict: dict):
     template = jinja2_env.get_template('feature_detail_cat.html')
-    output = template.render(feature_dict = feature_dict, compare_dict = compare_dict)
-    return output
+    return template.render(feature_dict = feature_dict, compare_dict = compare_dict)

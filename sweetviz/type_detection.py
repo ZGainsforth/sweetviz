@@ -47,15 +47,18 @@ def determine_feature_type(series: pd.Series, counts: dict,
     # CAT/BOOL -> NUM
     # NUM -> CAT
     # NUM -> TEXT
-    if must_be_this_type != FeatureType.TYPE_UNKNOWN and \
-                must_be_this_type != var_type:
+    if must_be_this_type not in [FeatureType.TYPE_UNKNOWN, var_type]:
         if var_type == FeatureType.TYPE_TEXT and must_be_this_type == FeatureType.TYPE_CAT:
             var_type = FeatureType.TYPE_CAT
-        elif (var_type == FeatureType.TYPE_CAT or var_type == FeatureType.TYPE_BOOL ) and \
-            must_be_this_type == FeatureType.TYPE_TEXT:
+        elif (
+            var_type in [FeatureType.TYPE_CAT, FeatureType.TYPE_BOOL]
+            and must_be_this_type == FeatureType.TYPE_TEXT
+        ):
             var_type = FeatureType.TYPE_TEXT
-        elif (var_type == FeatureType.TYPE_CAT or var_type == FeatureType.TYPE_BOOL) and \
-             must_be_this_type == FeatureType.TYPE_NUM:
+        elif (
+            var_type in [FeatureType.TYPE_CAT, FeatureType.TYPE_BOOL]
+            and must_be_this_type == FeatureType.TYPE_NUM
+        ):
             # Trickiest: Coerce into numerical
             if could_be_numeric(series):
                 var_type = FeatureType.TYPE_NUM

@@ -129,7 +129,7 @@ class GraphAssoc(sweetviz.graph.Graph):
             # (we will just not render the Unused rows/cols)
             graph_data = pd.DataFrame()
             # Add columns
-            empty_row_dict = dict()
+            empty_row_dict = {}
             for feature in nums:
                 graph_data[feature] = pd.Series()
                 empty_row_dict[feature] = 0.0
@@ -171,12 +171,12 @@ class GraphAssoc(sweetviz.graph.Graph):
 def make_zero_square_dataframe(features):
     new_dataframe = pd.DataFrame()
     # Add columns
-    empty_row_dict = dict()
+    empty_row_dict = {}
     for feature in features:
         new_dataframe[feature] = pd.Series(dtype=float)
         empty_row_dict[feature] = 0.0
     # Add series
-    for categorical in features:
+    for _ in features:
         new_dataframe = new_dataframe.append(pd.Series(empty_row_dict, name=feature))
     # MUST DROP INDEX GRRRR
     return new_dataframe.reset_index(drop=True)
@@ -354,7 +354,7 @@ def heatmap(y, x, figure_size, **kwargs):
     return figure
 
 def filter_best_corr(correlation_dataframe):
-    top_values = dict()
+    top_values = {}
     for features in itertools.product(correlation_dataframe.index.values, \
         correlation_dataframe.columns):
         val = correlation_dataframe[features[0]][features[1]]

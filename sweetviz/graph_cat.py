@@ -48,7 +48,7 @@ def plot_grouped_bars(tick_names: List[str], data_lists: List[List], \
                 plt.yticks(locations_centered, tick_names)
                 plt.barh(category_starts + offset, cur_height_list, bar_width, \
                         color=cur_color, **kwargs)
-        offset = offset - bar_width
+        offset -= bar_width
     # return category_starts + (bar_width / 2.0), bar_width
     return locations_centered, bar_width
 
@@ -121,7 +121,7 @@ class GraphCat(sweetviz.graph.Graph):
         # Plot: index 0 at BOTTOM
         # Need to change TICK NAMES and all elements in height_lists
         # ---------------------------------------------
-        reversed_height_lists = list()
+        reversed_height_lists = []
         for height_list in height_lists:
             reversed_height_lists.append(list(reversed(height_list)))
         tick_names = list(reversed(tick_names))
@@ -145,7 +145,7 @@ class GraphCat(sweetviz.graph.Graph):
         if to_process.source_target is not None:
             if to_process.predetermined_type_target == FeatureType.TYPE_NUM:
                 # TARGET: IS NUMERIC
-                target_values_source = list()
+                target_values_source = []
                 names_excluding_others = [key for key in tick_names if key != OTHERS_GROUPED]
                 for name in tick_names:
                     if name == OTHERS_GROUPED:
@@ -167,7 +167,7 @@ class GraphCat(sweetviz.graph.Graph):
                 if to_process.compare is not None and \
                         to_process.compare_target is not None:
                     # TARGET NUMERIC: with compare TARGET
-                    target_values_compare = list()
+                    target_values_compare = []
                     for name in tick_names:
                         if name == OTHERS_GROUPED:
                             tick_average = to_process.compare_target[ \
@@ -182,7 +182,7 @@ class GraphCat(sweetviz.graph.Graph):
             elif to_process.predetermined_type_target == FeatureType.TYPE_BOOL:
                 # TARGET: IS BOOL
                 # ------------------------------------
-                target_values_source = list()
+                target_values_source = []
                 names_excluding_others = [key for key in tick_names if key != OTHERS_GROUPED]
                 for name in tick_names:
                     if name == OTHERS_GROUPED:
@@ -203,7 +203,7 @@ class GraphCat(sweetviz.graph.Graph):
                 axs.plot(target_values_source, category_centers,
                          marker='o', color=sweetviz.graph.COLOR_TARGET_SOURCE)
 
-                target_values_compare = list()
+                target_values_compare = []
                 if to_process.compare is not None and \
                         to_process.compare_target is not None:
                     # TARGET BOOL: with compare TARGET
@@ -218,13 +218,13 @@ class GraphCat(sweetviz.graph.Graph):
                         # target_values_compare.append(tick_num * matched_data_series[name])
                     axs.plot(target_values_compare, category_centers,
                              marker='o', color=sweetviz.graph.COLOR_TARGET_COMPARE)
-                # else:
-                #     # TARGET BOOL: NO compare TARGET -> Just fill with zeros so alignment is still good
-                #     for name in tick_names:
-                #         target_values_compare.append(0.0)
-                # target_plot_series = [target_values_source, target_values_compare]
-                # plot_grouped_bars(tick_names, target_plot_series, ('k','k'), gap_percent,
-                #                   orientation='horizontal', axis_obj=axs, alpha=0.6)
+                        # else:
+                        #     # TARGET BOOL: NO compare TARGET -> Just fill with zeros so alignment is still good
+                        #     for name in tick_names:
+                        #         target_values_compare.append(0.0)
+                        # target_plot_series = [target_values_source, target_values_compare]
+                        # plot_grouped_bars(tick_names, target_plot_series, ('k','k'), gap_percent,
+                        #                   orientation='horizontal', axis_obj=axs, alpha=0.6)
 
         # Finalize Graph
         # -----------------------------

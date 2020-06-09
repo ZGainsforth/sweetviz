@@ -87,9 +87,9 @@ class FeatureToProcess:
     def __repr__(self):
         out = str()
         if self.source is not None:
-            out = out + f"Src: {self.source.name} "
+            out += f"Src: {self.source.name} "
             if self.source_target is not None:
-                out = out + f"(Target: {self.source_target.name}) "
+                out += f"(Target: {self.source_target.name}) "
         if self.compare is not None:
-            out = out + f"[WITH COMPARISON]"
+            out += f"[WITH COMPARISON]"
         return out

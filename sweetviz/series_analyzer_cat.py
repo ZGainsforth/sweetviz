@@ -116,14 +116,14 @@ def do_detail_categorical(to_process: FeatureToProcess, updated_dict: dict):
 
 def analyze(to_process: FeatureToProcess, feature_dict: dict):
     compare_dict = feature_dict.get("compare")
-    feature_dict["stats"] = dict()
+    feature_dict["stats"] = {}
     if compare_dict:
-        compare_dict["stats"] = dict()
+        compare_dict["stats"] = {}
 
     do_detail_categorical(to_process, feature_dict)
 
     feature_dict["minigraph"] = GraphCat("mini", to_process)
-    feature_dict["detail_graphs"] = list()
+    feature_dict["detail_graphs"] = []
     feature_dict["detail_graphs"].append(GraphCat("detail", to_process))
 
     if to_process.is_target():

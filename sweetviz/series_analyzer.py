@@ -37,8 +37,8 @@ def fill_out_missing_counts_in_other_series(my_counts:dict, other_counts:dict):
                 my_counts[to_fill].at[key] = 0
 
 def add_series_base_stats_to_dict(series: pd.Series, counts: dict, updated_dict: dict) -> dict:
-    updated_dict["stats"] = dict()
-    updated_dict["base_stats"] = dict()
+    updated_dict["stats"] = {}
+    updated_dict["base_stats"] = {}
     base_stats = updated_dict["base_stats"]
     num_total = counts["num_rows_total"]
     num_zeros = series[series == 0].sum()

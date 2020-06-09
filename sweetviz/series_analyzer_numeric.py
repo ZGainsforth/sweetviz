@@ -90,7 +90,7 @@ def analyze(to_process: FeatureToProcess, feature_dict: dict):
     do_detail_numeric(to_process.source, to_process.source_counts, to_process.compare_counts, feature_dict)
 
     feature_dict["minigraph"] = GraphNumeric("mini", to_process)
-    feature_dict["detail_graphs"] = list()
+    feature_dict["detail_graphs"] = []
     for num_bins in [0, 5, 15, 30]:
         new_graph = GraphNumeric("detail-"+str(num_bins), to_process)
         if new_graph:

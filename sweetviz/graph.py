@@ -37,20 +37,19 @@ class Graph:
     def set_style(style_filename_list):
         # graph_font_filename = resource_filename(__name__, os.path.join("fonts", "Roboto-Medium.ttf"))
 
+        font_dirs = [resource_filename(__name__, "fonts"), ]
         # WORKAROUND: createFontList deprecation in mpl >=3.2
         if hasattr(fm.fontManager, "addfont"):
-            font_dirs = [resource_filename(__name__, "fonts"), ]
             font_files = fm.findSystemFonts(fontpaths=font_dirs)
             for font_found in font_files:
                 fm.fontManager.addfont(font_found)
         else:
-            font_dirs = [resource_filename(__name__, "fonts"), ]
             font_files = fm.findSystemFonts(fontpaths=font_dirs)
             font_list = fm.createFontList(font_files)
             fm.fontManager.ttflist.extend(font_list)
             fm.fontManager.ttflist = font_list
 
-        styles_in_final_location = list()
+        styles_in_final_location = []
         for source_name in style_filename_list:
             styles_in_final_location.append(resource_filename(__name__, os.path.join("mpl_styles",
                                                                                      source_name)))
