@@ -43,7 +43,7 @@ def is_boolean(series: pd.Series, counts: dict) -> bool:
     ):
         return True
     elif 1 <= counts["distinct_count_without_nan"] <= 4:
-        unique_values = set([str(value).lower() for value in keys.values])
+        unique_values = {str(value).lower() for value in keys.values}
         accepted_combinations = [
             ["y", "n"],
             ["yes", "no"],
@@ -52,8 +52,7 @@ def is_boolean(series: pd.Series, counts: dict) -> bool:
         ]
 
         if len(unique_values) == 2 and any(
-                [unique_values == set(bools) for bools in
-                 accepted_combinations]
+            unique_values == set(bools) for bools in accepted_combinations
         ):
             return True
     return False
@@ -115,10 +114,7 @@ def str_is_path(p: str) -> bool:
     """
     try:
         path = Path(p)
-        if path.is_absolute():
-            return True
-        else:
-            return False
+        return bool(path.is_absolute())
     except TypeError:
         return False
 
@@ -135,7 +131,6 @@ def is_path(series, counts) -> bool:
 
 
 def is_date(series) -> bool:
-    is_date_value = pd.api.types.is_datetime64_dtype(series)
-    return is_date_value
+    return pd.api.types.is_datetime64_dtype(series)
 
 

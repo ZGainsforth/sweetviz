@@ -231,7 +231,7 @@ def correlation_ratio(categories,
     cat_num = np.max(fcat) + 1
     y_avg_array = np.zeros(cat_num)
     n_array = np.zeros(cat_num)
-    for i in range(0, cat_num):
+    for i in range(cat_num):
         cat_measures = measurements[np.argwhere(fcat == i).flatten()]
         n_array[i] = len(cat_measures)
         y_avg_array[i] = np.average(cat_measures)
@@ -240,8 +240,4 @@ def correlation_ratio(categories,
         np.multiply(n_array, np.power(np.subtract(y_avg_array, y_total_avg),
                                       2)))
     denominator = np.sum(np.power(np.subtract(measurements, y_total_avg), 2))
-    if numerator == 0:
-        eta = 0.0
-    else:
-        eta = np.sqrt(numerator / denominator)
-    return eta
+    return 0.0 if numerator == 0 else np.sqrt(numerator / denominator)

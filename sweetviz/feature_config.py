@@ -8,7 +8,7 @@ class FeatureConfig:
             force_cat: Tuple = None, force_text: Tuple = None,
             force_num: Tuple = None):
         def make_list(param):
-            if type(param) == list or type(param) == tuple:
+            if type(param) in [list, tuple]:
                 return param
             elif type(param) == str:
                 return [param]
@@ -34,8 +34,7 @@ class FeatureConfig:
             return FeatureType.TYPE_UNKNOWN
 
     def get_all_mentioned_features(self):
-        returned = list()
-        returned.extend(self.skip)
+        returned = list(self.skip)
         returned.extend(self.force_cat)
         returned.extend(self.force_text)
         returned.extend(self.force_num)

@@ -332,9 +332,15 @@ class DataframeReport:
         target_dict["duplicates"] = NumWithPercent(sum(source.duplicated()), len(source))
 
     def summarize_category_types(self, source: pd.DataFrame, target_dict: dict, skip: List[str]):
-        target_dict["num_cat"] = len([x for x in self._features.values()
-                                        if (x["type"] == FeatureType.TYPE_CAT or x["type"] == FeatureType.TYPE_BOOL)
-                                            and x["name"] not in skip])
+        target_dict["num_cat"] = len(
+            [
+                x
+                for x in self._features.values()
+                if x["type"] in [FeatureType.TYPE_CAT, FeatureType.TYPE_BOOL]
+                and x["name"] not in skip
+            ]
+        )
+
         target_dict["num_numerical"] = len([x for x in self._features.values()
                                                     if x["type"] == FeatureType.TYPE_NUM and x["name"] not in skip])
         target_dict["num_text"] = len([x for x in self._features.values()
@@ -342,7 +348,7 @@ class DataframeReport:
         return
 
     def get_what_influences_me(self, feature_name: str) -> dict:
-        influenced = dict()
+        influenced = {}
         for cur_name, cur_associations in self._associations.items():
             if cur_name == feature_name:
                 continue
@@ -356,7 +362,7 @@ class DataframeReport:
 
         def mirror_association(association_dict, feature_name, other_name, value):
             if other_name not in association_dict.keys():
-                association_dict[other_name] = dict()
+                association_dict[other_name] = {}
             other_dict = association_dict[other_name]
             if feature_name not in other_dict.keys():
                 other_dict[feature_name] = value
